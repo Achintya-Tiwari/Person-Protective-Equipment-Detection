@@ -1,13 +1,162 @@
-# Person-Protective-Equipment-Detection
-This project endeavours to leverage state-of-the-art computer vision technology to detect the presence of protective equipment worn by individuals in construction site environments. By employing the YOLOv8 model, a powerful object detection algorithm, in conjunction with the Ultralytics framework, the project aims to enable real-time monitoring of safety equipment through live CCTV footage or video streams. To achieve this, the project integrates the YOLOv8 model with the OpenCV library for video processing and the CVZone library for overlaying informative annotations onto the video feed. Additionally, the Math library is employed for performing complex calculations related to pixel manipulation and geometric transformations.
+# 🦺 PPE Compliance Monitor
 
-## Work Flow of the Project
-This Repo is divided into parts of Custom Training and Videos. Apart form those you have a "PPE_detection.py" python executable file which is the main file. The Custom Training Directory is used to store the files required for custom training of the YOLO V8 model and produce the "best.pt" file with the best encountered weights after training. 
+Real-time Personal Protective Equipment detection powered by **YOLOv8** and **Streamlit**.
 
-###### Recommended: Upload the whole Custom Training folder to your Drive and then run "Model_Custom_training.ipynb" file on Google Colab. 
+Upload a construction-site video or connect a live webcam and the system detects hardhats, safety vests, masks, and flags any missing equipment as a violation — with a live compliance dashboard.
 
-The Videos directory contains some Demo Construction site Videos on which you can try your model out before connecting to the Webcam/Live CCTV  footage.
+---
 
-The "PPE_detection.py" file is having the lines of code which connect the Program to the Webcam / live CCTV footage. You just need to un-comment it and comment the Video one. Also remember to change the camera no. inside the "VideoCapture()" function. There '0' is ussually mapped to Webcam of the device. Just find the camera no. of your connected cctv and replace it with '0'.
+## Screenshots
+app_overview.png
+detection_view.png
+stats_dashboard.png
 
-###### Refer: "https://www.scaler.com/topics/cv2-videocapture/" for help.
+### App Overview
+The full interface: sidebar settings on the left, video feed and controls on the right.
+
+![App Overview](assets/app_overview.png)
+
+### Detection in Action
+Color-coded bounding boxes drawn on a construction scene — green for compliant PPE, red for violations, blue for other objects.
+
+![Detection View](assets/detection_view.png)
+
+### Live Compliance Dashboard
+Real-time metrics update every frame: total detections, violations, compliant count, and overall compliance rate with a progress bar.
+
+![Stats Dashboard](assets/stats_dashboard.png)
+
+---
+
+## Features
+
+- **Video upload** — process `.mp4`, `.avi`, `.mov` files frame-by-frame
+- **Live webcam** — real-time detection from a connected camera
+- **Adjustable confidence threshold** — tune sensitivity from the sidebar
+- **Class filter** — choose which of the 10 object classes to detect
+- **Live stats dashboard** — total detections, violations, compliant count, and compliance rate updated every frame
+- **Color-coded bounding boxes** — 🔴 Red = violation, 🟢 Green = compliant, 🔵 Blue = other
+
+### Detected classes
+
+| Compliant (green) | Violation (red) | Other (blue) |
+|---|---|---|
+| Hardhat | NO-Hardhat | Person |
+| Safety Vest | NO-Safety Vest | Safety Cone |
+| Mask | NO-Mask | machinery |
+| | | vehicle |
+
+---
+
+## Repository structure
+
+```
+Person-Protective-Equipment-Detection/
+├── assets/                   # Screenshots used in README
+│   ├── app_overview.png
+│   ├── detection_view.png
+│   └── stats_dashboard.png
+├── Custom Training/          # YOLOv8 training notebook & data
+│   └── Model_Custom_training.ipynb
+├── Videos/                   # Sample construction-site videos
+│   └── ppe-3-1.mp4
+├── app.py                    # Streamlit web application (main entry point)
+├── PPE_detection.py          # Original OpenCV-only detection script
+├── best.pt                   # Pre-trained YOLOv8 model weights
+├── requirements.txt          # Python dependencies
+├── .gitignore
+└── README.md
+```
+
+---
+
+## Getting started
+
+### Prerequisites
+
+- **Python 3.9 or newer** — [download](https://www.python.org/downloads/)
+- **Git** — [download](https://git-scm.com/downloads)
+- A **webcam** (only needed for live-camera mode)
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/<your-username>/Person-Protective-Equipment-Detection.git
+cd Person-Protective-Equipment-Detection
+```
+
+### 2. Create a virtual environment (recommended)
+
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# macOS / Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Verify the model weights
+
+Make sure `best.pt` is present in the project root. This file contains the trained YOLOv8 weights and is required for detection. It is included in the repository.
+
+### 5. Run the app
+
+```bash
+streamlit run app.py
+```
+
+The app will open automatically at `http://localhost:8501`.
+
+---
+
+## Usage
+
+1. **Upload mode** — Click *Upload Video*, pick a `.mp4`/`.avi`/`.mov` file (or use the included `Videos/ppe-3-1.mp4`), then press **▶ Start Detection**.
+2. **Webcam mode** — Switch to *Live Webcam* in the sidebar, then press **🎥 Start Webcam**.
+3. Adjust the **confidence threshold** and **class filter** in the sidebar at any time.
+4. Press **⏹ Stop** to halt processing.
+
+---
+
+## Running the original script (optional)
+
+The original OpenCV-window script is still available:
+
+```bash
+pip install cvzone
+python PPE_detection.py
+```
+
+> This opens a desktop `cv2.imshow` window and requires `cvzone`. The Streamlit app does **not** need `cvzone`.
+
+---
+
+## Custom training
+
+The `Custom Training/` folder contains a Jupyter notebook (`Model_Custom_training.ipynb`) and training data for retraining or fine-tuning the YOLOv8 model on your own PPE dataset. After training, replace `best.pt` with your new weights file.
+
+---
+
+## Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `ModuleNotFoundError: No module named 'ultralytics'` | Run `pip install -r requirements.txt` inside your activated virtual environment. |
+| `best.pt` not found | Make sure the weights file is in the project root, not inside a subfolder. |
+| Webcam not detected | Ensure no other application is using the camera. Try restarting and running the app again. |
+| Video doesn't play | Confirm the file is a valid `.mp4`, `.avi`, or `.mov`. Re-encode with FFmpeg if needed: `ffmpeg -i input.mov -c:v libx264 output.mp4` |
+| Port 8501 already in use | Run `streamlit run app.py --server.port 8502` to use a different port. |
+
+---
+
+## License
+
+This project is provided for educational and demonstration purposes.
