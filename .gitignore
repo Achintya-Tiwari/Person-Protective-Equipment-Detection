@@ -1,0 +1,44 @@
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+eggs/
+*.egg
+
+# ── Virtual environments ─────────────────────────────────
+venv/
+env/
+.venv/
+.env/
+
+# ── IDE / editor ─────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# ── OS junk ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Streamlit ────────────────────────────────────────────
+.streamlit/secrets.toml
+
+# ── YOLO / Ultralytics runtime artifacts ─────────────────
+runs/
+
+# ── Sample videos & training data (large, not needed to run) ─
+Videos/
+Custom Training/
+
+# ── Temp / uploads ───────────────────────────────────────
+*.tmp
+tmp/
